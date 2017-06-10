@@ -1,46 +1,47 @@
-import time as date
-import json as utility
-from Tkinter import *
+from datetime import datetime
+import csv as util
+import itertools
+# from Tkinter import *
 
-def show_entry_fields():
-    print ("Month: %s" % (e1.get()))
+#TODO: case for month changing
+#TODO: case for having program run every night
+#TODO: case for
 
+#updateValues lambda function
 
-def updatePortfolio():
-    return
+# make into lambda function
+def addValue(dictionary):
+    key = "key"; value = "value"
+    dictionary.update({key: value})
 
-master = Tk()
+def writeToPortfolio(newdict):
+    newlist = [(k,v) for k,v in newdict.iteritems()]
+    print newlist
+    with open('example.csv', 'wb') as out:
+        portfolio = util.writer(out)
+        portfolio.writerow(['month',datetime.now().strftime("%B")])
+        for row in newlist:
+            portfolio.writerow(row)
 
-Label(master, text="Month").grid(row=0,column=0)
-Label(master, text="Placeholder").grid(row=0,column=1)
-Label(master, text="Rent").grid(row=1)
-Label(master, text="Food").grid(row=2)
-Label(master, text="Gifts").grid(row=3)
-Label(master, text="Events").grid(row=4)
-Label(master, text="Large Expense").grid(row=5)
-Label(master, text="Misc").grid(row=6)
+def get_range(dictionary, begin, end):
+    return dict(itertools.islice(dictionary.iteritems(), begin, end + 1))
 
-e1 = Entry(master)
-e2 = Entry(master)
-e3 = Entry(master)
-e4 = Entry(master)
-e5 = Entry(master)
-e6 = Entry(master)
-e7 = Entry(master)
+with open('example.csv', mode='r') as infile:
+    reader = util.reader(infile)
+    with open('test.csv', mode='w') as outfile:
+        mainwriter = util.writer(outfile)
+        mydict = {rows[0]:rows[1] for rows in reader}
+    print(mydict)
 
+    # here append the updated values
 
-e2.grid(row=1, column=1)
-e3.grid(row=2, column=1)
-e4.grid(row=3, column=1)
-e5.grid(row=4, column=1)
-e6.grid(row=5, column=1)
-e7.grid(row=6, column=1)
+    # calculate sum of all values as monthly total
 
-Button(master, text='Quit', command=master.quit).grid(row=8,column=0,sticky=W+E,pady=4)
-Button(master, text='Show', command=show_entry_fields).grid(row=8,column=2,sticky=E,pady=4)
-Button(master, text='Update', command=updatePortfolio).grid(row=7,column=1,sticky=W+E,pady=4)
+    newdict = get_range(mydict, 0, len(mydict)-2)
+    print(newdict)
+    sample = [int(x) for x in newdict.values()]
+    print(sample)
+    print(sum(sample))
 
-mainloop()
-
-
-
+    # write to File
+    writeToPortfolio(newdict)
